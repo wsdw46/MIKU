@@ -1,0 +1,569 @@
+<br>
+<br>
+<br>
+<br>
+<!DOCTYPE html>
+<html lang="zh-CN" id="html-root">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WUYI的摄影作品</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">  
+  <style>
+    :root {
+      --bg-primary: linear-gradient(135deg, #f5f7fa 0%, #e4edf9 100%);
+      --text-primary: #2c3e50;
+      --text-secondary: #6c7a89;
+      --card-bg: #fff;
+      --shadow: 0 6px 16px rgba(0,0,0,0.08);
+      --shadow-hover: 0 12px 24px rgba(0,0,0,0.15);
+      --overlay-bg: rgba(0, 0, 0, 0.65);
+      --modal-bg: rgba(0,0,0,0.9);
+    }
+
+    .dark-mode {
+      --bg-primary: linear-gradient(135deg, #1a1f2b 0%, #121826 100%);
+      --text-primary: #e0e6f0;
+      --text-secondary: #a0aec0;
+      --card-bg: #1e293b;
+      --shadow: 0 6px 16px rgba(0,0,0,0.3);
+      --shadow-hover: 0 12px 24px rgba(0,0,0,0.4);
+      --overlay-bg: rgba(0, 0, 0, 0.75);
+      --modal-bg: rgba(10, 10, 20, 0.95);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      padding: 20px;
+      min-height: 100vh;
+      transition: background 0.4s ease, color 0.4s ease;
+      opacity: 0;
+      animation: pageFadeIn 0.8s forwards;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* === 雾气背景 === */
+    .fog-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .fog-layer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 60vh;
+      background-repeat: repeat-x;
+      background-size: auto 100%;
+    }
+    .fog-1 {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23ffffff30' d='M0,100 Q300,60 600,100 T1200,100 L1200,200 L0,200 Z'/%3E%3C/svg%3E");
+      animation: drift 35s linear infinite;
+    }
+    .fog-2 {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23ffffff20' d='M0,120 Q250,80 500,120 T1000,120 L1000,200 L0,200 Z'/%3E%3C/svg%3E");
+      animation: drift 45s linear infinite reverse;
+      opacity: 1.1;
+    }
+    .dark-mode .fog-1 {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%235d8aa820' d='M0,100 Q300,60 600,100 T1200,100 L1200,200 L0,200 Z'/%3E%3C/svg%3E");
+    }
+    .dark-mode .fog-2 {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%235d8aa815' d='M0,120 Q250,80 500,120 T1000,120 L1000,200 L0,200 Z'/%3E%3C/svg%3E");
+    }
+    @keyframes drift {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    @keyframes pageFadeIn {
+      to { opacity: 1; }
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 20px 0;
+      position: relative;
+    }
+
+    .title-container {
+      position: relative;
+      display: inline-block;
+    }
+    .sparkle {
+      position: absolute;
+      font-size: 1.2rem;
+      opacity: 0;
+      animation: sparkleFloat 3s infinite ease-in-out;
+    }
+    .sparkle:nth-child(1) { top: -20px; left: -30px; animation-delay: 0s; }
+    .sparkle:nth-child(2) { top: -25px; right: -35px; animation-delay: 0.8s; }
+    .sparkle:nth-child(3) { bottom: -15px; left: -25px; animation-delay: 1.6s; }
+
+    @keyframes sparkleFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0; }
+      50% { transform: translateY(-15px) rotate(15deg); opacity: 1; }
+    }
+
+    h1 {
+      font-size: 2.6rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, #5d8aa8, #4a6b8a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: 1px;
+      position: relative;
+      display: inline-block;
+    }
+
+    #theme-toggle {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: var(--card-bg);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      font-size: 1.2rem;
+      transition: transform 0.3s ease;
+      z-index: 10;
+    }
+    #theme-toggle:hover {
+      transform: rotate(20deg);
+    }
+
+    .search-container {
+      max-width: 1200px;
+      margin: 0 auto 25px;
+      text-align: center;
+    }
+    #search-input {
+      width: 100%;
+      max-width: 400px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: 2px solid #cbd5e1;
+      border-radius: 30px;
+      background: var(--card-bg);
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    #search-input:focus {
+      border-color: #5d8aa8;
+      box-shadow: 0 0 0 3px rgba(93, 138, 168, 0.2);
+    }
+    .dark-mode #search-input {
+      border-color: #4a5568;
+    }
+
+    .filters {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 8px 18px;
+      background: var(--card-bg);
+      border: 2px solid #cbd5e1;
+      border-radius: 30px;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background: #5d8aa8;
+      color: white;
+      border-color: #5d8aa8;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 10px;
+    }
+
+    .gallery-item {
+      height: 280px;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      position: relative;
+      transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      background: var(--card-bg);
+      opacity: 0;
+      animation: fadeIn 0.6s forwards;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.3) 0%, transparent 40%),
+        var(--card-bg);
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+    }
+
+    .gallery-item::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border-radius: 12px;
+      box-shadow: inset 0 0 20px rgba(93, 138, 168, 0);
+      transition: box-shadow 0.4s ease;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .gallery-item:hover::before {
+      box-shadow: inset 0 0 20px rgba(93, 138, 168, 0.4);
+    }
+
+    header p {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      font-weight: 300;
+    }
+
+    .gallery-item:nth-child(n) {
+      animation-delay: calc(0.1s + (var(--i) * 0.1s));
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: var(--shadow-hover);
+      z-index: 10;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.05);
+    }
+
+    .photo-title {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--overlay-bg);
+      color: white;
+      padding: 12px;
+      font-size: 1rem;
+      font-weight: 500;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      text-align: center;
+      backdrop-filter: blur(2px);
+    }
+
+    .gallery-item:hover .photo-title {
+      transform: translateY(0);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      padding: 20px;
+    }
+
+    footer p:last-child {
+      margin-top: 8px;
+      animation: heartbeat 1.8s infinite;
+    }
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    #modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--modal-bg);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23ffffff20' d='M34.5,-32.8C41.7,-25.5,47.1,-13.9,46.7,-1.3C46.3,11.3,40.1,22.8,30.3,30.3C20.5,37.8,7.1,41.3,-6.1,41.3C-19.3,41.3,-32.5,37.8,-39.3,28.5C-46.1,19.2,-46.5,4.1,-42.8,-9.8C-39.1,-23.7,-31.3,-36.4,-20.8,-41.3C-10.3,-46.2,1.1,-43.3,12.8,-37.8C24.5,-32.3,36.5,-24.2,34.5,-32.8Z' transform='translate(100 100) scale(0.8)'/%3E%3C/svg%3E");  
+    }
+    .dark-mode #modal {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%235d8aa830' d='M34.5,-32.8C41.7,-25.5,47.1,-13.9,46.7,-1.3C46.3,11.3,40.1,22.8,30.3,30.3C20.5,37.8,7.1,41.3,-6.1,41.3C-19.3,41.3,-32.5,37.8,-39.3,28.5C-46.1,19.2,-46.5,4.1,-42.8,-9.8C-39.1,-23.7,-31.3,-36.4,-20.8,-41.3C-10.3,-46.2,1.1,-43.3,12.8,-37.8C24.5,-32.3,36.5,-24.2,34.5,-32.8Z' transform='translate(100 100) scale(0.8)'/%3E%3C/svg%3E");
+    }
+    #modal.active {
+      display: flex;
+      opacity: 1;
+    }
+    #modal img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 8px;
+      box-shadow: 0 0 30px rgba(255,255,255,0.2);
+    }
+    #close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: white;
+      font-size: 2.2rem;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-weight: bold;
+    }
+
+    #share-btn {
+      position: absolute;
+      bottom: 30px;
+      right: 30px;
+      background: #5d8aa8;
+      color: white;
+      border: none;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease;
+    }
+    #share-btn:hover {
+      transform: scale(1.1);
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--card-bg);
+      color: var(--text-primary);
+      padding: 12px 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      opacity: 0;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+      z-index: 2000;
+    }
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <!-- 雾气背景 -->
+  <div class="fog-overlay">
+    <div class="fog-layer fog-1"></div>
+    <div class="fog-layer fog-2"></div>
+  </div>
+
+  <header>
+    <button id="theme-toggle">🌙</button>  
+
+    <div class="title-container">
+      <span class="sparkle">✨</span>
+      <span class="sparkle">🌟</span>
+      <span class="sparkle">💫</span>
+      <h1>我的摄影世界</h1>
+    </div>
+
+    <p>相机记录光影，虚拟定格瞬间</p>
+    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 6px; font-weight: 300;">
+    ( 🌟图片存于Github，需要魔法加载 🌟)
+  </p>
+  </header>
+
+  <div class="search-container">
+    <input type="text" id="search-input" placeholder="搜索照片（如 KIRA、合影、跨年...）">
+  </div>
+
+  <div class="filters" id="filters">
+    <!-- 动态生成 -->
+  </div>
+
+  <div class="gallery" id="gallery">
+    <!-- 照片将通过 JS 动态插入 -->
+  </div>
+
+  <footer>
+    <p>© 2025 我的摄影作品集</p>
+    <p>WUYI ❤ 你们所有人</p>
+  </footer>
+
+  <div id="modal">
+    <button id="close">&times;</button>
+    <img id="modal-img" src="" alt="大图预览">  
+    <button id="share-btn">↗</button>
+  </div>
+
+  <div id="toast">链接已复制到剪贴板！</div>
+
+  <script>
+    const photos = [
+      { src: "images/First.jpg", alt: "无翼老师", category: "无翼" },
+      { src: "images/wuyi1.jpg", alt: "无翼老师", category: "无翼" },
+     
+    ];
+
+    const searchInput = document.getElementById("search-input");
+    searchInput.addEventListener("input", () => {
+      const keyword = searchInput.value.trim().toLowerCase();
+      let filtered = photos;
+      if (keyword) {
+        filtered = photos.filter(p => p.alt.toLowerCase().includes(keyword));
+      }
+      renderGallery(filtered);
+    });
+
+    const categories = ["全部", ...new Set(photos.map(p => p.category))];
+
+    const filtersContainer = document.getElementById("filters");
+    categories.forEach(cat => {
+      const btn = document.createElement("button");
+      btn.className = "filter-btn";
+      if (cat === "全部") btn.classList.add("active");
+      btn.textContent = cat;
+      btn.dataset.category = cat;
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        filterGallery(cat);
+      });
+      filtersContainer.appendChild(btn);
+    });
+
+    const gallery = document.getElementById("gallery");
+    let currentFilter = "全部";
+
+    function renderGallery(items) {
+      gallery.innerHTML = "";
+      items.forEach((photo, index) => {
+        const item = document.createElement("div");
+        item.className = "gallery-item";
+        item.style.setProperty('--i', index % 6);
+        item.innerHTML = `
+          <img src="${photo.src}" alt="${photo.alt}" loading="lazy">
+          <div class="photo-title">${photo.alt}</div>
+        `;
+        item.addEventListener("click", () => {
+          modalImg.src = photo.src;
+          modalImg.alt = photo.alt;
+          modal.classList.add("active");
+          document.body.style.overflow = "hidden";
+        });
+        gallery.appendChild(item);
+      });
+    }
+
+    function filterGallery(category) {
+      currentFilter = category;
+      const filtered = category === "全部"
+        ? photos
+        : photos.filter(p => p.category === category);
+      const keyword = searchInput.value.trim().toLowerCase();
+      if (keyword) {
+        const finalFiltered = filtered.filter(p => p.alt.toLowerCase().includes(keyword));
+        renderGallery(finalFiltered);
+      } else {
+        renderGallery(filtered);
+      }
+    }
+
+    renderGallery(photos);
+
+    const htmlRoot = document.getElementById("html-root");
+    const themeToggle = document.getElementById("theme-toggle");
+    const isDarkMode = localStorage.getItem("darkMode") === "true";
+
+    if (isDarkMode) {
+      htmlRoot.classList.add("dark-mode");
+      themeToggle.textContent = "☀️";
+    }
+
+    themeToggle.addEventListener("click", () => {
+      htmlRoot.classList.toggle("dark-mode");
+      const isNowDark = htmlRoot.classList.contains("dark-mode");
+      themeToggle.textContent = isNowDark ? "☀️" : "🌙";
+      localStorage.setItem("darkMode", isNowDark);
+    });
+
+    const modal = document.getElementById("modal");
+    const modalImg = document.getElementById("modal-img");
+    const closeBtn = document.getElementById("close");
+    const shareBtn = document.getElementById("share-btn");
+    const toast = document.getElementById("toast");
+
+    closeBtn.addEventListener("click", closeModal);
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal.classList.contains("active")) {
+        closeModal();
+      }
+    });
+
+    function closeModal() {
+      modal.classList.remove("active");
+      document.body.style.overflow = "";
+    }
+
+    shareBtn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        showToast();
+      } catch (err) {
+        alert("无法复制链接，请手动分享！");
+      }
+    });
+
+    function showToast() {
+      toast.classList.add("show");
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2000);
+    }
+  </script>
+</body>
+</html>
+
