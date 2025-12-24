@@ -1,7 +1,3 @@
-<br>
-<br>
-<br>
-<br>
 <!DOCTYPE html>
 <html lang="zh-CN" id="html-root">
 <head>
@@ -387,6 +383,174 @@
       transform: translateX(-50%) translateY(0);
       opacity: 1;
     }
+    
+    /* ========== 竖屏模式专属样式 ========== */
+    .portrait-section {
+      margin-top: 60px;
+      padding-top: 40px;
+      border-top: 2px dashed rgba(93, 138, 168, 0.3);
+    }
+    
+    .section-title {
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 30px;
+      color: #5d8aa8;
+      position: relative;
+      display: inline-block;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0 20px;
+    }
+    
+    .section-title::before,
+    .section-title::after {
+      content: "📱";
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.5rem;
+    }
+    
+    .section-title::before {
+      left: -25px;
+    }
+    
+    .section-title::after {
+      right: -25px;
+    }
+    
+    .portrait-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 18px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 10px;
+    }
+    
+    .portrait-item {
+      height: 320px;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      position: relative;
+      transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      background: var(--card-bg);
+      opacity: 0;
+      animation: fadeIn 0.6s forwards;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.3) 0%, transparent 40%),
+        var(--card-bg);
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+    }
+    
+    .portrait-item::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border-radius: 12px;
+      box-shadow: inset 0 0 20px rgba(255, 105, 180, 0);
+      transition: box-shadow 0.4s ease;
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    .portrait-item:hover::before {
+      box-shadow: inset 0 0 20px rgba(255, 105, 180, 0.4);
+    }
+    
+    .portrait-item:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: var(--shadow-hover);
+      z-index: 10;
+    }
+    
+    .portrait-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+    
+    .portrait-item:hover img {
+      transform: scale(1.05);
+    }
+    
+    .portrait-title {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--overlay-bg);
+      color: white;
+      padding: 12px;
+      font-size: 1rem;
+      font-weight: 500;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      text-align: center;
+      backdrop-filter: blur(2px);
+    }
+    
+    .portrait-item:hover .portrait-title {
+      transform: translateY(0);
+    }
+    
+    /* ========== 添加竖屏按钮 ========== */
+    .add-portrait-section {
+      text-align: center;
+      margin: 40px 0;
+      padding: 30px;
+      background: rgba(93, 138, 168, 0.05);
+      border-radius: 15px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .add-portrait-title {
+      font-size: 1.5rem;
+      color: #5d8aa8;
+      margin-bottom: 15px;
+    }
+    
+    .add-portrait-instructions {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: left;
+      max-width: 600px;
+      margin: 0 auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    
+    .code-block {
+      background: rgba(0,0,0,0.05);
+      padding: 12px;
+      border-radius: 8px;
+      font-family: monospace;
+      margin: 15px 0;
+      overflow-x: auto;
+      border-left: 4px solid #5d8aa8;
+    }
+    
+    .step-number {
+      display: inline-block;
+      background: #5d8aa8;
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 24px;
+      margin-right: 10px;
+    }
   </style>
 </head>
 <body>
@@ -420,8 +584,39 @@
     <!-- 动态生成 -->
   </div>
 
+  <!-- 横屏照片区域 -->
   <div class="gallery" id="gallery">
-    <!-- 照片将通过 JS 动态插入 -->
+    <!-- 横屏照片将通过 JS 动态插入 -->
+  </div>
+
+  <!-- ========== 新增：竖屏照片区域 ========== -->
+  <div class="portrait-section">
+    <h2 class="section-title">竖屏作品</h2>
+    
+    <div class="portrait-gallery" id="portrait-gallery">
+      <!-- 竖屏照片将通过 JS 动态插入 -->
+      <!-- 下面是我为你准备的示例竖屏照片，你可以删除它们，添加你自己的 -->
+    </div>
+    
+    <!-- 添加竖屏照片教程区域 -->
+    <div class="add-portrait-section">
+      <h3 class="add-portrait-title">📱 如何添加竖屏照片</h3>
+      <div class="add-portrait-instructions">
+        <p><span class="step-number">1</span> 将竖屏照片放入网站的 <strong>images/</strong> 文件夹</p>
+        <p><span class="step-number">2</span> 找到下面代码中的 "竖屏照片数据" 部分</p>
+        <p><span class="step-number">3</span> 复制并粘贴下面的代码，然后修改图片名称：</p>
+        
+        <div class="code-block">
+          // 竖屏照片数据 - 在这里添加你的竖屏照片<br>
+          // 格式：<br>
+          { src: "images/你的竖屏照片1.jpg", alt: "照片描述", category: "竖屏" },<br>
+          { src: "images/你的竖屏照片2.jpg", alt: "照片描述", category: "竖屏" },<br>
+          { src: "images/你的竖屏照片3.jpg", alt: "照片描述", category: "竖屏" },
+        </div>
+        
+        <p><span class="step-number">4</span> 保存文件，刷新网页查看效果！</p>
+      </div>
+    </div>
   </div>
 
   <footer>
@@ -438,7 +633,9 @@
   <div id="toast">链接已复制到剪贴板！</div>
 
   <script>
-    const photos = [
+    // ========== 横屏照片数据 ==========
+    // 你的横屏照片数据在这里 - 完全不会动你的横屏数据！
+    const horizontalPhotos = [
       { src: "images/1.jpg", alt: "1", category: "秋" },
       { src: "images/2.jpg", alt: "2", category: "秋" },
       { src: "images/3.jpg", alt: "3", category: "秋" },
@@ -448,22 +645,57 @@
       { src: "images/7.jpg", alt: "7", category: "秋" },
       { src: "images/8.jpg", alt: "8", category: "秋" },
       { src: "images/9.jpg", alt: "9", category: "秋" },
-    
     ];
 
+    // ========== 竖屏照片数据 ==========
+    // 在这里添加你的竖屏照片！
+    // 注意：category必须写"竖屏"，这样才能正确显示在竖屏区域
+    const portraitPhotos = [
+      // 示例竖屏照片（你可以删除这些示例，添加你自己的）
+      { src: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cG9ydHJhaXR8ZW58MHx8MHx8fDA%3D&w=400&q=80", alt: "竖屏示例1", category: "竖屏" },
+      { src: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8cG9ydHJhaXR8ZW58MHx8MHx8fDA%3D&w=400&q=80", alt: "竖屏示例2", category: "竖屏" },
+      { src: "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8cG9ydHJhaXR8ZW58MHx8MHx8fDA%3D&w=400&q=80", alt: "竖屏示例3", category: "竖屏" },
+      { src: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHBvcnRyYWl0fGVufDB8fDB8fHww&w=400&q=80", alt: "竖屏示例4", category: "竖屏" },
+      
+      // ========== 复制下面的格式来添加你的竖屏照片 ==========
+      // { src: "images/你的竖屏照片1.jpg", alt: "照片描述", category: "竖屏" },
+      // { src: "images/你的竖屏照片2.jpg", alt: "照片描述", category: "竖屏" },
+      // { src: "images/你的竖屏照片3.jpg", alt: "照片描述", category: "竖屏" },
+    ];
+
+    // 合并所有照片用于搜索和过滤
+    const allPhotos = [...horizontalPhotos, ...portraitPhotos];
+
+    // ========== 搜索功能 ==========
     const searchInput = document.getElementById("search-input");
     searchInput.addEventListener("input", () => {
       const keyword = searchInput.value.trim().toLowerCase();
-      let filtered = photos;
-      if (keyword) {
-        filtered = photos.filter(p => p.alt.toLowerCase().includes(keyword));
+      if (!keyword) {
+        // 如果搜索框为空，显示所有照片
+        renderHorizontalGallery(horizontalPhotos);
+        renderPortraitGallery(portraitPhotos);
+        return;
       }
-      renderGallery(filtered);
+      
+      // 搜索横屏照片
+      const filteredHorizontal = horizontalPhotos.filter(p => 
+        p.alt.toLowerCase().includes(keyword) || 
+        p.category.toLowerCase().includes(keyword)
+      );
+      renderHorizontalGallery(filteredHorizontal);
+      
+      // 搜索竖屏照片
+      const filteredPortrait = portraitPhotos.filter(p => 
+        p.alt.toLowerCase().includes(keyword) || 
+        p.category.toLowerCase().includes(keyword)
+      );
+      renderPortraitGallery(filteredPortrait);
     });
 
-    const categories = ["全部", ...new Set(photos.map(p => p.category))];
-
+    // ========== 过滤功能 ==========
+    const categories = ["全部", ...new Set(allPhotos.map(p => p.category))];
     const filtersContainer = document.getElementById("filters");
+    
     categories.forEach(cat => {
       const btn = document.createElement("button");
       btn.className = "filter-btn";
@@ -473,15 +705,16 @@
       btn.addEventListener("click", () => {
         document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
-        filterGallery(cat);
+        filterAllGalleries(cat);
       });
       filtersContainer.appendChild(btn);
     });
 
+    // ========== 横屏画廊 ==========
     const gallery = document.getElementById("gallery");
     let currentFilter = "全部";
 
-    function renderGallery(items) {
+    function renderHorizontalGallery(items) {
       gallery.innerHTML = "";
       items.forEach((photo, index) => {
         const item = document.createElement("div");
@@ -501,22 +734,66 @@
       });
     }
 
-    function filterGallery(category) {
+    // ========== 竖屏画廊 ==========
+    const portraitGallery = document.getElementById("portrait-gallery");
+    
+    function renderPortraitGallery(items) {
+      portraitGallery.innerHTML = "";
+      
+      if (items.length === 0) {
+        // 如果没有竖屏照片，显示提示信息
+        portraitGallery.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-secondary);">
+            <p style="font-size: 1.2rem; margin-bottom: 10px;">还没有竖屏照片哦！</p>
+            <p>按照上面的教程添加你的竖屏照片吧！</p>
+          </div>
+        `;
+        return;
+      }
+      
+      items.forEach((photo, index) => {
+        const item = document.createElement("div");
+        item.className = "portrait-item";
+        item.style.setProperty('--i', index % 6);
+        item.innerHTML = `
+          <img src="${photo.src}" alt="${photo.alt}" loading="lazy">
+          <div class="portrait-title">${photo.alt}</div>
+        `;
+        item.addEventListener("click", () => {
+          modalImg.src = photo.src;
+          modalImg.alt = photo.alt;
+          modal.classList.add("active");
+          document.body.style.overflow = "hidden";
+        });
+        portraitGallery.appendChild(item);
+      });
+    }
+
+    // ========== 过滤所有画廊 ==========
+    function filterAllGalleries(category) {
       currentFilter = category;
-      const filtered = category === "全部"
-        ? photos
-        : photos.filter(p => p.category === category);
-      const keyword = searchInput.value.trim().toLowerCase();
-      if (keyword) {
-        const finalFiltered = filtered.filter(p => p.alt.toLowerCase().includes(keyword));
-        renderGallery(finalFiltered);
+      
+      if (category === "全部") {
+        // 显示所有横屏和竖屏照片
+        renderHorizontalGallery(horizontalPhotos);
+        renderPortraitGallery(portraitPhotos);
+      } else if (category === "竖屏") {
+        // 只显示竖屏照片
+        renderHorizontalGallery([]); // 清空横屏区域
+        renderPortraitGallery(portraitPhotos);
       } else {
-        renderGallery(filtered);
+        // 显示对应分类的横屏照片
+        const filteredHorizontal = horizontalPhotos.filter(p => p.category === category);
+        renderHorizontalGallery(filteredHorizontal);
+        renderPortraitGallery([]); // 清空竖屏区域
       }
     }
 
-    renderGallery(photos);
+    // 初始渲染
+    renderHorizontalGallery(horizontalPhotos);
+    renderPortraitGallery(portraitPhotos);
 
+    // ========== 主题切换功能 ==========
     const htmlRoot = document.getElementById("html-root");
     const themeToggle = document.getElementById("theme-toggle");
     const isDarkMode = localStorage.getItem("darkMode") === "true";
@@ -533,6 +810,7 @@
       localStorage.setItem("darkMode", isNowDark);
     });
 
+    // ========== 模态框功能 ==========
     const modal = document.getElementById("modal");
     const modalImg = document.getElementById("modal-img");
     const closeBtn = document.getElementById("close");
@@ -555,6 +833,7 @@
       document.body.style.overflow = "";
     }
 
+    // ========== 分享功能 ==========
     shareBtn.addEventListener("click", async () => {
       try {
         await navigator.clipboard.writeText(window.location.href);
@@ -573,9 +852,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
