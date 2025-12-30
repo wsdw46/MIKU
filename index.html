@@ -1,0 +1,2118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<link rel="shortcut icon" href="favicon.png">
+    <title>秋音的神秘角落</title>
+    <style>
+        /* ==== 核心样式变量 (MD3) ==== */
+        :root {
+            /* 基础色 */
+            --md-sys-color-background: #0a0a0a;
+            --md-sys-color-on-background: #e2e2e2;
+            --md-sys-color-surface: #121212;
+            --md-sys-color-surface-container: #1e1e1e;
+			--md-sys-color-surface-container-opacity: #1e1e1e66;
+            --md-sys-color-on-surface: #c4c7c5;
+            /* 强调色 */
+            --md-sys-color-primary: #e0e0e0;         /* 亮银色 */
+            --md-sys-color-on-primary: #1a1a1a;      /* 深黑色文字 */
+            --md-sys-color-primary-container: #4a4a4a; /* 深银灰容器 */
+            --md-sys-color-on-primary-container: #ffffff;
+
+            /* 次要色 */
+            --md-sys-color-secondary: #c0c0c0;
+            --md-sys-color-secondary-container: #333333;
+            
+            /* 布局变量 */
+            --nav-width-expanded: 280px;
+            --nav-width-collapsed: 80px;
+            --bottom-bar-height: 70px;
+            --border-radius-lg: 24px;
+            --border-radius-md: 16px;
+            
+            /* 动画曲线 */
+            --motion-easing-emphasized: cubic-bezier(0.2, 0.0, 0, 1.0);
+            --motion-duration-medium: 400ms;
+        }
+
+        /* 基础设置 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+			user-select: none; 
+			-webkit-user-select: none;
+			outline:none;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-background);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+        }
+
+        /* 滚动条 */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+		/* ==== 布局组件：侧边导航 (PC端) ==== */
+
+        /* 侧边导航 (PC端) */
+        .sidebar {
+            width: var(--nav-width-expanded);
+            height: 100%;
+            background-color: var(--md-sys-color-surface);
+            display: flex;
+            flex-direction: column;
+            padding: 24px 12px;
+            transition: width var(--motion-duration-medium) var(--motion-easing-emphasized);
+            border-right: 1px solid rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+
+        .sidebar.collapsed {
+            width: var(--nav-width-collapsed);
+        }
+
+        .logo-area {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+			padding-left: 5px;
+            margin-bottom: 24px;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--md-sys-color-primary);
+            overflow: hidden;
+            white-space: nowrap;
+			transition: all 0.4s ease;
+        }
+		.logo-area img {
+            height: 36px;
+			width: 36px;
+            border: 2px solid var(--md-sys-color-secondary);
+			border-radius: 50%;
+			transition: all 0.4s ease;
+        }
+
+		.logo-area span {
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar.collapsed .logo-area span {
+            opacity: 0;
+        }
+		.sidebar.collapsed .logo-area img {
+            height: 55px;
+			width: 55px;
+            border: 2px solid var(--md-sys-color-secondary);
+			border-radius: 50%;
+        }
+		.sidebar.collapsed .logo-area {
+            gap: 5px;
+			padding-left: 0px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            height: 56px;
+			min-width: 56px;
+            padding: 0 16px;
+            border-radius: 28px;
+            color: var(--md-sys-color-on-surface);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 8px;
+            position: relative;
+            overflow: hidden; /* for ripple */
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-item.active {
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+
+        .nav-label {
+            margin-left: 12px;
+            white-space: nowrap;
+            opacity: 1;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar.collapsed .nav-label {
+            opacity: 0;
+            width: 0;
+        }
+
+        .sidebar-toggle {
+            margin-top: auto;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            align-self: flex-start;
+            margin-left: 4px;
+            color: var(--md-sys-color-on-surface);
+        }
+        .sidebar-toggle:hover { background-color: rgba(255,255,255,0.05); }
+
+		/* ==== 布局组件：底部导航 (移动端) ==== */
+
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: var(--bottom-bar-height);
+            background-color: var(--md-sys-color-surface-container);
+            display: none; /* PC默认隐藏 */
+            justify-content: space-around;
+            align-items: center;
+            z-index: 200;
+			padding: 0px 5px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+        }
+
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--md-sys-color-on-surface);
+            padding: 8px;
+            border-radius: 16px;
+            width: 64px;
+			position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .bottom-nav-item.active {
+            color: var(--md-sys-color-on-primary-container);
+        }
+        
+        /* 激活时的胶囊背景指示器 */
+        .bottom-nav-item.active .icon-container {
+            background-color: var(--md-sys-color-primary-container);
+        }
+
+        .icon-container {
+            width: 64px;
+            height: 32px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 4px;
+			position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        .bottom-label {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+		/* 移动端更多菜单 */
+        .mobile-more-menu {
+            position: fixed;
+            bottom: 90px;
+            right: 16px;
+            background: var(--md-sys-color-surface-container);
+            border-radius: 24px;
+            padding: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            transform: translateY(20px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s ease;
+            z-index: 201;
+            min-width: 120px;
+        }
+
+        .mobile-more-menu.active {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .mobile-menu-item {
+            padding: 12px 24px 12px 18px;
+			border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--md-sys-color-on-surface);
+			position: relative;
+            overflow: hidden;
+			background: var(--md-sys-color-surface-container);
+            transition: all 0.2s ease;
+        }
+
+		.mobile-menu-item:first-child {
+            border-radius: 20px 20px 4px 4px;
+			padding: 14px 24px 12px 18px;
+        }
+		.mobile-menu-item:last-child {
+            border-radius: 4px 4px 20px 20px;
+			padding: 12px 24px 14px 18px;
+        }
+
+        .mobile-menu-item:active {
+            background: var(--md-sys-color-secondary-container);
+        }
+
+
+        /* ==== 布局组件：主内容区域 ==== */
+        .main-content {
+            flex: 1;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            background-color: var(--md-sys-color-background);
+        }
+
+        .page-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 40px;
+            padding-bottom: 50px; /* 留出底部空间 */
+            overflow-y: auto;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            transition: 
+                opacity 0.4s var(--motion-easing-emphasized),
+                transform 0.4s var(--motion-easing-emphasized);
+            display: none; /* 默认不渲染 */
+			animation: pageIn 0.3s ease;
+        }
+
+        .page-container.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+            display: block;
+        }
+
+        h1.page-title {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 40px;
+            letter-spacing: -0.02em;
+            color: var(--md-sys-color-on-background);
+            border-left: 4px solid var(--md-sys-color-primary);
+            padding-left: 20px;
+        }
+
+        
+
+		/* ==== 瀑布流布局与全屏图片样式 ==== */
+        .masonry-grid {
+            column-count: 3;
+            column-gap: 24px;
+        }
+        
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 24px;
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+            position: relative;
+            cursor: zoom-in;
+            background: var(--md-sys-color-surface-container);
+            transition: transform 0.3s ease;
+        }
+
+        .masonry-item img {
+            width: 100%;
+            display: block;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .masonry-item:hover {
+            transform: scale(1.02);
+            z-index: 10;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* 全屏查看器 */
+        .lightbox-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+            cursor: zoom-out;
+        }
+
+        .lightbox-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+        }
+        
+        .lightbox-overlay.active .lightbox-img {
+            transform: scale(1);
+        }
+
+		/* 图片悬浮覆盖层 */
+        .item-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            pointer-events: none; /* 让点击事件穿透到 img */
+        }
+        
+        .masonry-item:hover .item-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .overlay-title {
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .overlay-type {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+		
+
+        /* 移动端适配瀑布流 */
+        @media (max-width: 900px) {
+            .masonry-grid {
+                column-count: 2;
+                column-gap: 16px;
+            }
+        }
+
+        
+
+
+        /* ==== 页面特定样式 ==== */
+        
+        /* 关于我 (About) */
+		#page-about {
+			background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)),  /* 压暗层 */
+                url('img/works/horizontal/16.jpg') center/cover fixed;
+		}
+
+        .profile-card {
+            //background: var(--md-sys-color-surface-container-opacity);
+			//backdrop-filter: saturate(1.8) contrast(0.9) brightness(0.9) blur(30px);
+			//-webkit-backdrop-filter: saturate(1.8) contrast(0.9) brightness(0.9) blur(30px);
+            border-radius: var(--border-radius-lg);
+            //padding: 40px;
+			width: auto;
+            max-width: 700px;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: url('img/photos/qiuyin/1.jpg') center/cover fixed;
+            object-fit: cover;
+            border: 4px solid var(--md-sys-color-primary);
+        }
+        .bio h2 { font-size: 1.8rem; margin-bottom: 12px; color: var(--md-sys-color-primary); }
+        .bio p { line-height: 1.8; opacity: 0.8; margin-bottom: 16px; }
+        .stats { display: flex; gap: 20px; }
+        .stat-item { text-align: center; }
+        .stat-num { font-size: 1.5rem; font-weight: bold; color: var(--md-sys-color-primary); }
+        .stat-desc { font-size: 0.8rem; opacity: 0.6; }
+
+		/* 关于我 底部图库 */
+        .about-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 16px;
+            width: 100%;
+            max-width: 800px;
+        }
+        .about-photo {
+            aspect-ratio: 1/1;
+            background: #333;
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .about-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        .about-photo:hover img { transform: scale(1.1); }
+
+        /* 作品集 (Portfolio) */
+        .filter-tabs {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 25px;
+			overflow-x: auto;
+			flex-shrink: 0;
+        }
+		/* 滚动条 */
+        .filter-tabs::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .filter-tabs::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+        .filter-tabs::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .filter-btn {
+            padding: 10px 20px;
+			margin-bottom: 5px;
+            border-radius: 100px;
+            border: 1px solid var(--md-sys-color-surface-container);
+            background: var(--md-sys-color-surface-container);
+            color: var(--md-sys-color-on-surface);
+            cursor: pointer;
+			position: relative;
+            overflow: hidden;
+			flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .filter-btn.active {
+            background: var(--md-sys-color-primary);
+            border-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        /* 写作 (Writing) */
+        .article-list { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 16px; 
+            width: 100%;
+            //max-width: 1000px;
+            position: relative;
+        }
+
+        .article-item {
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.4s var(--motion-easing-emphasized);
+            border-radius: 24px;
+            background: var(--md-sys-color-on-primary);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: relative; /* 保证层级 */
+        }
+        
+        .article-item:hover { 
+            background: var(--md-sys-color-surface-container); 
+        }
+
+        /* 列表模式下的头部布局 */
+        .article-header {
+            display: flex;
+			flex-direction: column;
+            gap: 16px;
+            width: 100%;
+            overflow: hidden;
+			transition: all 0.4s var(--motion-easing-emphasized);
+        }
+
+        .article-date { 
+            font-size: 0.9rem; 
+            color: var(--md-sys-color-primary); 
+            white-space: nowrap;
+            flex-shrink: 0;
+			transition: all 0.4s var(--motion-easing-emphasized);
+        }
+
+        .article-title { 
+            font-size: 1.1rem; 
+            font-weight: bold;
+            white-space: nowrap;
+            flex-shrink: 0;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+			transition: all 0.4s var(--motion-easing-emphasized);
+        }
+
+		.article-text {
+			display: flex;
+			flex-direction: column;
+			gap: 5px;
+			min-width: 0;
+			max-width: 100%;
+			overflow: hidden;
+			white-space: nowrap;
+            overflow: hidden;
+			flex-grow: 1;
+            text-overflow: ellipsis;
+			transition: all 0.4s var(--motion-easing-emphasized);
+		}
+
+		.article-excerpt { 
+            font-size: 0.95rem; 
+            opacity: 0.6; 
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex-grow: 1;
+            min-width: 0; /* Flexbox 截断 */
+			max-width: 100%;
+			display: none;
+			transition: all 0.4s var(--motion-easing-emphasized);
+        }
+
+		.article-excerpt:first-child, .article-excerpt:only-child, .article-excerpt:first-child:last-child { 
+			display: flex;
+        }	
+
+        /* 列表模式下的图片行 */
+        .article-imgs {
+            display: flex;
+            gap: 10px;
+            height: 0; /* 默认隐藏图片行，除非有内容 */
+            overflow: hidden;
+            opacity: 0;
+            transition: all 0.4s var(--motion-easing-emphasized);
+        }
+        
+        /* 如果有图片，给它高度 */
+        .article-item.has-img .article-imgs {
+            height: 70px;
+            opacity: 1;
+            margin-top: 4px;
+        }
+
+        .article-imgs img {
+            height: 100%;
+            width: auto;
+            border-radius: 8px;
+            cursor: zoom-in;
+            object-fit: cover;
+            //aspect-ratio: 4/3;
+			transition: all 0.4s var(--motion-easing-emphasized);
+        }
+
+        /* 展开状态样式 (.expanded) */
+        .article-item.expanded {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100%;
+            z-index: 100;
+            background: var(--md-sys-color-background); /* 覆盖背景 */
+            border-bottom: none;
+            padding: 40px 30px 60px 30px; /* 顶部留出返回按钮空间 */
+            cursor: default;
+            overflow-y: visible; /* 允许内容撑开 */
+        }
+
+        /* 展开后的头部布局 */
+        .article-item.expanded .article-header {
+            flex-direction: column;
+            align-items: flex-start;
+            white-space: normal;
+            overflow: visible;
+        }
+
+        .article-item.expanded .article-date {
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .article-item.expanded .article-title {
+            font-size: 2.5rem;
+            margin-bottom: 24px;
+            white-space: normal;
+            max-width: 100%;
+            line-height: 1.2;
+        }
+
+        .article-item.expanded .article-excerpt {
+            white-space: normal;
+            overflow: visible;
+            opacity: 0.9;
+            line-height: 1.8;
+            font-size: 1.1rem;
+			display: flex;
+        }
+
+        /* 展开后的图片 */
+        .article-item.expanded .article-imgs {
+            height: auto;
+            opacity: 1;
+            flex-direction: column;
+            margin-top: 10px;
+			border-radius: 12px;
+        }
+
+        .article-item.expanded .article-imgs img {
+            width: 100%;
+            height: auto;
+			//max-width: 1100px;
+            //max-height: 600px;
+            object-fit: contain;
+            margin-bottom: 10px;
+            border-radius: 12px;
+        }
+
+        /* 返回按钮 */
+        #writing-back-btn {
+            position: fixed;
+            top: 120px;
+            left: 50%; /* 相对于视口居中 */
+            transform: translateX(-50%) translateY(-180px); /* 默认移出屏幕 */
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            padding: 8px 24px 8px 20px;
+            border-radius: 100px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 200;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.4s var(--motion-easing-emphasized);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        #writing-back-btn.visible {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 进步史 (Timeline) */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin-left: 20px;
+            border-left: 2px solid rgba(255,255,255,0.1);
+        }
+        .timeline-item {
+            margin-bottom: 40px;
+            padding-left: 30px;
+            position: relative;
+        }
+        .timeline-dot {
+            width: 16px;
+            height: 16px;
+            background: var(--md-sys-color-primary);
+            border-radius: 50%;
+            position: absolute;
+            left: -9px;
+            top: 5px;
+            //box-shadow: 0 0 10px var(--md-sys-color-primary);
+        }
+        .timeline-year { font-weight: bold; color: var(--md-sys-color-primary); font-size: 1.1rem; }
+
+		/* 进步史图片 */
+        .timeline-img {
+            margin-top: 12px;
+            width: 100%;
+            max-width: 300px;
+            border-radius: var(--border-radius-md);
+            background: #222;
+            display: block;
+            object-fit: cover;
+            aspect-ratio: 16/9;
+            cursor: zoom-in;
+        }
+
+        /* 唠嗑区 (Chat) */
+        .chat-container {
+            max-width: 700px;
+            height: calc(100% - 120px);
+            display: flex;
+            flex-direction: column;
+            background: var(--md-sys-color-surface-container);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .msg {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            animation: fadeIn 0.3s ease;
+        }
+        .msg.me {
+            align-self: flex-end;
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            border-bottom-right-radius: 4px;
+        }
+        .msg.other {
+            align-self: flex-start;
+            background: rgba(255,255,255,0.08);
+            border-bottom-left-radius: 4px;
+        }
+        .chat-input-area {
+            padding: 16px;
+            background: rgba(0,0,0,0.2);
+            display: flex;
+            gap: 10px;
+        }
+        .chat-input {
+            flex: 1;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 12px;
+            border-radius: 24px;
+            outline: none;
+        }
+        .chat-send {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+			position: relative;
+            overflow: hidden;
+        }
+
+        /* 标签云 (Tags) */
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            max-width: 800px;
+            margin: 0 auto;
+            padding-top: 40px;
+        }
+        .tag-chip {
+            padding: 12px 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 100px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+			position: relative;
+            overflow: hidden;
+            background: rgba(255,255,255,0.02);
+        }
+        .tag-chip:hover {
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            transform: scale(1.1) rotate(2deg);
+            border-color: transparent;
+        }
+
+		.tag-cloud-home {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 0;
+            padding-top: 0px;
+        }
+        .tag-chip-home {
+			//background: var(--md-sys-color-surface-container-opacity);
+			backdrop-filter: saturate(1.8) contrast(0.9) brightness(0.9) blur(30px);
+			-webkit-backdrop-filter: saturate(1.8) contrast(0.9) brightness(0.9) blur(30px);
+            padding: 8px 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 100px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+			position: relative;
+            overflow: hidden;
+            background: rgba(255,255,255,0.02);
+        }
+		.tag-chip-home:hover {
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            transform: scale(1.1) rotate(2deg);
+            border-color: transparent;
+        }
+
+
+		/* 链接（links） */
+        .link-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            margin-top: 20px;
+        }
+        .link-card {
+            display: flex;
+            align-items: center;
+            background-color: var(--md-sys-color-surface-container);
+            padding: 20px;
+            border-radius: 24px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+            cursor: pointer;
+        }
+        .link-card:hover {
+            transform: translateY(-2px);
+            background-color: rgba(255,255,255,0.08);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .link-icon-box {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        .link-icon {
+            width: 48px;
+            height: 48px;
+        }
+        .link-info {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .link-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .link-id {
+            font-size: 0.9rem;
+            opacity: 0.6;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+		/* ==== 音乐分享 (Music) ==== */
+        .music-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 24px;
+            width: 100%;
+        }
+
+        .music-card {
+            background: var(--md-sys-color-surface-container);
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .music-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            z-index: 5;
+        }
+
+        .music-cover-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 100%; /* 1:1 Aspect Ratio */
+            background: #222;
+        }
+
+        .music-cover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+		/* 播放中状态 */
+        .music-card.playing .music-cover {
+            transform: scale(1.02);
+        }
+        
+        /* 播放按钮 */
+        .play-btn-overlay {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            width: 48px;
+            height: 48px;
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            z-index: 2;
+        }
+
+        .play-btn-overlay:hover {
+            transform: scale(1.1);
+        }
+
+        .play-btn-overlay svg {
+            width: 28px;
+            height: 28px;
+            fill: currentColor;
+        }
+
+        /* 进度条 */
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: var(--md-sys-color-secondary-container);
+            cursor: pointer;
+            position: relative;
+            z-index: 3;
+        }
+        
+        .progress-container:hover {
+            height: 8px; /* 悬停时变高便于点击 */
+            margin-top: -2px; /* 保持布局位置 */
+            margin-bottom: -2px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--md-sys-color-primary);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .music-info {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .music-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .music-artist {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* 自定义右键菜单 */
+        .context-menu {
+            position: fixed;
+            background: var(--md-sys-color-surface-container);
+            //border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 4px;
+            min-width: 170px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            z-index: 9999;
+            display: none;
+			gap: 2px;
+            flex-direction: column;
+        }
+        
+        .context-menu-item {
+            padding: 12px 18px 12px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            color: var(--md-sys-color-on-surface);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+			background: var(--md-sys-color-surface-container);
+            transition: all 0.2s ease;
+        }
+
+		.context-menu-item:first-child {
+            border-radius: 20px 20px 4px 4px;
+			padding: 14px 20px 12px 14px;
+        }
+		.context-menu-item:last-child {
+            border-radius: 4px 4px 20px 20px;
+			padding: 12px 20px 14px 14px;
+        }
+        
+        .context-menu-item:hover {
+            background: var(--md-sys-color-secondary-container);
+        }
+
+        /* ==== 响应式适配 ==== */
+        @media (max-width: 768px) {
+            .sidebar { display: none; } /* 隐藏PC侧边栏 */
+            .bottom-bar { display: flex; } /* 显示底部导航 */
+            .page-container { padding: 20px; padding-bottom: 100px; }
+            .profile-card { flex-direction: column; text-align: center; padding: 20px 0px 0px 0px; }
+            .stats { justify-content: center; }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .main-content { margin-left: 0; }
+            h1.page-title { font-size: 2rem; margin-bottom: 24px; }
+			.link-grid { grid-template-columns: 1fr; }
+			.filter-tabs { gap: 8px; }
+			.article-item.expanded { padding: 50px 0px 140px 0px; }
+			#writing-back-btn { top: 80px; }
+			.article-item.expanded .article-title { font-size: 1.8rem; margin-bottom: 20px; }
+			.music-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } /* 移动端双列 */
+			.music-info { padding: 10px 12px; gap: 4px; }
+			.music-title { font-size: 0.9rem; }
+        	.music-artist { font-size: 0.7rem; }
+
+			/* 滚动条 */
+        ::-webkit-scrollbar {
+            width: 0px;
+            height: 0px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        }
+
+        /* Ripple Effect 样式 */
+        span.ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        @keyframes ripple {
+            to { transform: scale(4); opacity: 0; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+		@keyframes pageIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 全屏图片容器 -->
+    <div id="lightbox" class="lightbox-overlay" onclick="closeLightbox()">
+        <img id="lightbox-img" class="lightbox-img" src="" alt="Full view">
+    </div>
+
+	<!-- 音乐右键菜单 -->
+    <div id="music-context-menu" class="context-menu">
+        <div class="context-menu-item" onclick="handleContextMenuAction('play')">
+            <svg style="width:20px;height:20px;fill:currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <span id="ctx-play-text">播放 / 暂停</span>
+        </div>
+        <div class="context-menu-item" onclick="handleContextMenuAction('restart')">
+            <svg style="width:20px;height:20px;fill:currentColor" viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+            从头播放
+        </div>
+        <div class="context-menu-item" onclick="handleContextMenuAction('netease')">
+            <svg style="width:20px;height:20px;fill:currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M400-120q-66 0-113-47t-47-113q0-66 47-113t113-47q23 0 42.5 5.5T480-418v-422h240v160H560v400q0 66-47 113t-113 47Z"/></svg>
+            在网易云中查看
+        </div>
+    </div>
+    
+    <!-- 隐形音频播放器 -->
+    <audio id="global-audio" preload="none"></audio>
+
+    <!-- PC 端侧边栏导航 -->
+    <nav class="sidebar" id="sidebar">
+        <div class="logo-area">
+			<img src="favicon.png">
+            <span>秋音的神秘角落</span>
+        </div>
+
+        <div class="nav-item active" onclick="switchTab('about')">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z"/></svg>
+            <span class="nav-label">关于我</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('portfolio')">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm40-80h480L570-480 450-320l-90-120-120 160Zm-40 80v-560 560Zm140-360q25 0 42.5-17.5T400-620q0-25-17.5-42.5T340-680q-25 0-42.5 17.5T280-620q0 25 17.5 42.5T340-560Z"/></svg>
+            <span class="nav-label">作品集</span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab('photos')">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="m480-420 240-160-240-160v320Zm28 220h224q-7 26-24 42t-44 20L228-85q-33 5-59.5-15.5T138-154L85-591q-4-33 16-59t53-30l46-6v80l-36 5 54 437 290-36Zm-148-80q-33 0-56.5-23.5T280-360v-440q0-33 23.5-56.5T360-880h440q33 0 56.5 23.5T880-800v440q0 33-23.5 56.5T800-280H360Zm0-80h440v-440H360v440Zm220-220ZM218-164Z"/></svg>
+            <span class="nav-label">合影留念</span>
+        </div>
+
+        <div class="nav-item" onclick="switchTab('writing')">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M120-120v-80h480v80H120Zm0-160v-80h720v80H120Zm80-160q-33 0-56.5-23.5T120-520v-240q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v240q0 33-23.5 56.5T760-440H200Zm0-80h560v-240H200v240Zm0 0v-240 240Z"/></svg>
+            <span class="nav-label">写作分享</span>
+        </div>
+
+		<div class="nav-item" onclick="switchTab('music')">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M500-360q42 0 71-29t29-71v-220h120v-80H560v220q-13-10-28-15t-32-5q-42 0-71 29t-29 71q0 42 29 71t71 29ZM320-240q-33 0-56.5-23.5T240-320v-480q0-33 23.5-56.5T320-880h480q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H320Zm0-80h480v-480H320v480ZM160-80q-33 0-56.5-23.5T80-160v-560h80v560h560v80H160Zm160-720v480-480Z"/></svg>
+            <span class="nav-label">音乐分享</span>
+        </div>
+        
+        <!-- <div class="nav-item" onclick="switchTab('timeline')">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="m612-292 56-56-148-148v-184h-80v216l172 172ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q133 0 226.5-93.5T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160Z"/></svg>
+            <span class="nav-label">进步史</span>
+        </div> -->
+        <div class="nav-item" onclick="switchTab('chat')">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M360-400h80v-320h-80v320Zm160 0h80v-320h-80v320ZM80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Zm126-240h594v-480H160v525l46-45Zm-46 0v-480 480Z"/></svg>
+            <span class="nav-label">联系我</span>
+        </div>
+        <!-- <div class="nav-item" onclick="switchTab('tags')">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M856-390 570-104q-12 12-27 18t-30 6q-15 0-30-6t-27-18L103-457q-11-11-17-25.5T80-513v-287q0-33 23.5-56.5T160-880h287q16 0 31 6.5t26 17.5l352 353q12 12 17.5 27t5.5 30q0 15-5.5 29.5T856-390ZM513-160l286-286-353-354H160v286l353 354ZM260-640q25 0 42.5-17.5T320-700q0-25-17.5-42.5T260-760q-25 0-42.5 17.5T200-700q0 25 17.5 42.5T260-640Zm220 160Z"/></svg>
+            <span class="nav-label">标签墙</span>
+        </div> -->
+		<div class="nav-item" onclick="switchTab('links')">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-280H280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h160v80H280q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h320v80H320Zm200 160v-80h160q50 0 85-35t35-85q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H520Z"/></svg>
+            <span class="nav-label">我的链接</span>
+        </div>
+
+        <div class="sidebar-toggle" onclick="toggleSidebar()">
+            <svg style="width:24px;height:24px;fill:currentColor" viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+        </div>
+    </nav>
+
+	<!-- 移动端底部导航 -->
+    <div class="bottom-bar">
+        <div class="bottom-nav-item active" onclick="switchTab('about')">
+            <div class="icon-container">
+                <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z"/></svg>
+            </div>
+            <span class="bottom-label">我</span>
+        </div>
+        <div class="bottom-nav-item" onclick="switchTab('portfolio')">
+            <div class="icon-container">
+                <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm40-80h480L570-480 450-320l-90-120-120 160Zm-40 80v-560 560Zm140-360q25 0 42.5-17.5T400-620q0-25-17.5-42.5T340-680q-25 0-42.5 17.5T280-620q0 25 17.5 42.5T340-560Z"/></svg>
+            </div>
+            <span class="bottom-label">作品</span>
+        </div>
+        <div class="bottom-nav-item" onclick="switchTab('photos')">
+            <div class="icon-container">
+                <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="m480-420 240-160-240-160v320Zm28 220h224q-7 26-24 42t-44 20L228-85q-33 5-59.5-15.5T138-154L85-591q-4-33 16-59t53-30l46-6v80l-36 5 54 437 290-36Zm-148-80q-33 0-56.5-23.5T280-360v-440q0-33 23.5-56.5T360-880h440q33 0 56.5 23.5T880-800v440q0 33-23.5 56.5T800-280H360Zm0-80h440v-440H360v440Zm220-220ZM218-164Z"/></svg>
+            </div>
+            <span class="bottom-label">合影</span>
+        </div>
+        <div class="bottom-nav-item" onclick="switchTab('writing')">
+            <div class="icon-container">
+                <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M120-120v-80h480v80H120Zm0-160v-80h720v80H120Zm80-160q-33 0-56.5-23.5T120-520v-240q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v240q0 33-23.5 56.5T760-440H200Zm0-80h560v-240H200v240Zm0 0v-240 240Z"/></svg>
+            </div>
+            <span class="bottom-label">文章</span>
+        </div>
+        <div class="bottom-nav-item" onclick="toggleMobileMenu()">
+            <div class="icon-container">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </div>
+            <span class="bottom-label">更多</span>
+        </div>
+    </div>
+
+    <!-- 移动端更多弹窗菜单 -->
+    <div class="mobile-more-menu" id="mobile-more-menu">
+		<div class="mobile-menu-item" onclick="switchTab('music'); removeMobileMenu()">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M500-360q42 0 71-29t29-71v-220h120v-80H560v220q-13-10-28-15t-32-5q-42 0-71 29t-29 71q0 42 29 71t71 29ZM320-240q-33 0-56.5-23.5T240-320v-480q0-33 23.5-56.5T320-880h480q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H320Zm0-80h480v-480H320v480ZM160-80q-33 0-56.5-23.5T80-160v-560h80v560h560v80H160Zm160-720v480-480Z"/></svg>
+            <span>音乐分享</span>
+        </div>
+        <!-- <div class="mobile-menu-item" onclick="switchTab('timeline'); removeMobileMenu()">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="m612-292 56-56-148-148v-184h-80v216l172 172ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q133 0 226.5-93.5T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160Z"/></svg>
+            <span>进步史</span>
+        </div> -->
+        <div class="mobile-menu-item" onclick="switchTab('chat'); removeMobileMenu()">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M360-400h80v-320h-80v320Zm160 0h80v-320h-80v320ZM80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Zm126-240h594v-480H160v525l46-45Zm-46 0v-480 480Z"/></svg>
+            <span>联系我</span>
+        </div>
+        <!-- <div class="mobile-menu-item" onclick="switchTab('tags'); removeMobileMenu()">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M856-390 570-104q-12 12-27 18t-30 6q-15 0-30-6t-27-18L103-457q-11-11-17-25.5T80-513v-287q0-33 23.5-56.5T160-880h287q16 0 31 6.5t26 17.5l352 353q12 12 17.5 27t5.5 30q0 15-5.5 29.5T856-390ZM513-160l286-286-353-354H160v286l353 354ZM260-640q25 0 42.5-17.5T320-700q0-25-17.5-42.5T260-760q-25 0-42.5 17.5T200-700q0 25 17.5 42.5T260-640Zm220 160Z"/></svg>
+            <span>标签墙</span>
+        </div> -->
+		<div class="mobile-menu-item" onclick="switchTab('links'); removeMobileMenu()">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-280H280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h160v80H280q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h320v80H320Zm200 160v-80h160q50 0 85-35t35-85q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H520Z"/></svg>
+            <span>链接</span>
+        </div>
+    </div>
+
+    <main class="main-content">
+        
+        <!-- 1. 关于我 (About) -->
+        <div id="page-about" class="page-container active">
+            <h1 class="page-title">你好，我是「秋音」。</h1>
+            <div class="profile-card">
+                <!-- 头像 -->
+                <div class="avatar"></div> 
+                <div class="bio">
+                    <h2>秋音</h2>
+                    <p>VRChat 资深玩家 & 模型师</p>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-num">1000+</div>
+                            <div class="stat-desc">游戏时长</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-num">6+</div>
+                            <div class="stat-desc">模型作品</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-num">200+</div>
+                            <div class="stat-desc">摄影作品</div>
+                        </div>
+                    </div>
+                </div>
+            <div class="tag-cloud-home">
+                <span class="tag-chip-home">VRChat</span>
+                <span class="tag-chip-home">Unity</span>
+                <span class="tag-chip-home">karin 卡琳</span>
+                <span class="tag-chip-home">摄影</span>
+                <span class="tag-chip-home">未来主义</span>
+                <span class="tag-chip-home">赛博朋克</span>
+            </div>
+                <!-- 个人图库 -->
+                <div class="about-gallery">
+                    <div class="about-photo" onclick="openLightbox(this)"><img src="img/works/horizontal/5.jpg"></div>
+                    <div class="about-photo" onclick="openLightbox(this)"><img src="img/works/vertical/11.jpg"></div>
+                    <div class="about-photo" onclick="openLightbox(this)"><img src="img/works/horizontal/19.jpg"></div>
+                    <div class="about-photo" onclick="openLightbox(this)"><img src="img/works/horizontal/20.jpg"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 作品集 (Portfolio) -->
+        <div id="page-portfolio" class="page-container">
+            <h1 class="page-title">创作集锦</h1>
+            <!-- 标签栏动态生成 -->
+            <div class="filter-tabs" id="works-tabs">
+            </div>       
+            <div class="masonry-grid" id="gallery-grid">
+            </div>
+        </div>
+        
+        <!-- 3. 合影 (Photos) -->
+        <div id="page-photos" class="page-container">
+            <h1 class="page-title">光影瞬间</h1>
+            <!-- 标签栏动态生成 -->
+            <div class="filter-tabs" id="photos-tabs">
+            </div>         
+            <div class="masonry-grid" id="photos-grid">
+            </div>
+        </div>
+
+        <!-- 4. 写作分享 (Writing) -->
+        <div id="page-writing" class="page-container">
+            
+
+            <h1 class="page-title">思维碎片</h1>
+            
+            <div class="article-list">
+				<!-- 返回按钮 -->
+            <div id="writing-back-btn" onclick="collapseArticle()">
+                <svg style="width:20px;height:20px;fill:currentColor" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                返回列表
+            </div>
+                <!-- 文章 1: 带图 -->
+                <div class="article-item has-img" onclick="expandArticle(this)">
+                    <div class="article-header">
+                        <div class="article-date">2025.12.28</div>
+                        <div class="article-title">标题标题标题标题标题标题</div>
+						<div class="article-text">
+                        	<div class="article-excerpt">正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文</div>
+							<div class="article-excerpt">正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文</div>
+						</div>
+                    </div>
+                    <div class="article-imgs">
+                        <img src="img/article/1.jpg" onclick="event.stopPropagation(); openLightbox(this)">
+                        <img src="img/article/2.jpg" onclick="event.stopPropagation(); openLightbox(this)">
+                    </div>
+                </div>
+
+                <!-- 文章 2: 纯文字 -->
+                <div class="article-item" onclick="expandArticle(this)">
+                    <div class="article-header">
+                        <div class="article-date">2025.12.28</div>
+                        <div class="article-title">标题标题标题标题</div>
+						<div class="article-text">
+                        	<div class="article-excerpt">正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文</div>
+						</div>
+                    </div>
+                </div>
+
+                <!-- 文章 3: 带图 -->
+                <div class="article-item has-img" onclick="expandArticle(this)">
+                    <div class="article-header">
+                        <div class="article-date">2025.12.28</div>
+                        <div class="article-title">标题标题标题标题标题标题标题标题标题标题标题标题</div>
+						<div class="article-text">
+                        	<div class="article-excerpt">正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正文正</div>
+						</div>
+                    </div>
+                    <div class="article-imgs">
+                        <img src="img/article/3.jpg" onclick="event.stopPropagation(); openLightbox(this)">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		<!-- 8. 音乐分享 (Music) -->
+        <div id="page-music" class="page-container">
+            <h1 class="page-title">音乐分享</h1>
+            <div class="music-grid" id="music-grid">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+
+        <!-- 5. 进步史 (Timeline) -->
+        <!-- <div id="page-timeline" class="page-container">
+            <h1 class="page-title">时间轨迹</h1>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2025 · 12</div>
+                    <p>进步史进步史进步史进步史进步史进步史进步史进步史进步史进步史进步史</p>
+                    <img class="timeline-img" src="img/timeline/1.jpg" onclick="openLightbox(this)">
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2025 · 6</div>
+                    <p>进步史进步史进步史进步史进步史进步史进步史</p>
+                    <img class="timeline-img" src="img/timeline/2.jpg" onclick="openLightbox(this)">
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2025 · 2</div>
+                    <p>进步史进步史进步史进步史进步史进步史进步史进步史进步史进步史进步史</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2024 · 12</div>
+                    <p>进步史进步史进步史进步史进步史进步史</p>
+                </div>
+            </div>
+        </div> -->
+
+        <!-- 6. 联系我 (Chat) -->
+        <div id="page-chat" class="page-container">
+            <h1 class="page-title">联系我</h1>
+            <div class="chat-container">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="msg other">随便说点什么吧。</div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" class="chat-input" id="chat-input" placeholder="输入消息..." onkeypress="handleChatEnter(event)">
+                    <button class="chat-send" onclick="sendMessage()">
+                        <svg style="width:20px;height:20px;fill:currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. 标签墙 (Tags) -->
+        <!-- <div id="page-tags" class="page-container">
+            <h1 class="page-title">灵感标签</h1>
+            <div class="tag-cloud">
+                <span class="tag-chip">1</span>
+                <span class="tag-chip">2</span>
+                <span class="tag-chip">3</span>
+                <span class="tag-chip">4</span>
+                <span class="tag-chip">5</span>
+                <span class="tag-chip">6</span>
+            </div>
+        </div> -->
+
+		<!-- 7. 我的链接 (Links) -->
+        <div id="page-links" class="page-container">
+            <h1 class="page-title">传送门</h1>
+            <div class="link-grid">
+                <!-- 哔哩哔哩 -->
+                <a href="https://www.bilibili.com/" class="link-card" target="_blank">
+                    <div class="link-icon-box">
+                        <svg class="link-icon" viewBox="0 0 24 24" vertical-align="middle" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v6a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4zm5-7l2 3m6-3l-2 3m-5 7v-2m6 0v2"/></svg>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-name">哔哩哔哩</div>
+                        <div class="link-id">@XXX</div>
+                    </div>
+                </a>
+                
+                <!-- GitHub -->
+                <a href="https://github.com/wsdw46" class="link-card" target="_blank">
+                    <div class="link-icon-box">
+                        <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" vertical-align="middle"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2c2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2a4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6c-.6.6-.6 1.2-.5 2V21"/></svg>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-name">GitHub</div>
+                        <div class="link-id">@XXX</div>
+                    </div>
+                </a>
+
+                <!-- VRChat -->
+                <a href="https://vrchat.com/" class="link-card" target="_blank">
+                    <div class="link-icon-box">
+                        <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M16 1.75C16 .784 15.216 0 14.25 0H1.75C.784 0 0 .784 0 1.75v9.5A1.75 1.75 0 0 0 1.75 13H7.94l2.573 2.573A1.458 1.458 0 0 0 13 14.543V13h1.25A1.75 1.75 0 0 0 16 11.25ZM14.25 1.5a.25.25 0 0 1 .25.25v9.5a.25.25 0 0 1-.25.25h-2a.75.75 0 0 0-.75.75v2.19l-2.72-2.72a.749.749 0 0 0-.53-.22h-6.5a.25.25 0 0 1-.25-.25v-9.5a.25.25 0 0 1 .25-.25Z"/><text x="3.3" y="9" font-size="7" fill="currentColor" stroke-linejoin="round" stroke-width="0.8" stroke="currentColor"> V </text><text x="8.4" y="9" font-size="7" fill="currentColor" stroke-linejoin="round" stroke-width="0.8" stroke="currentColor"> R </text></svg>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-name">VRChat</div>
+                        <div class="link-id">@XXX</div>
+                    </div>
+                </a>
+
+                <!-- 闲鱼 -->
+                <a href="https://www.goofish.com/" class="link-card" target="_blank">
+                    <div class="link-icon-box">
+                        <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-name">闲鱼</div>
+                        <div class="link-id">@XXX</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        /* ==== 数据配置 ==== */
+
+        // 作品集配置：对应 img/works/ 下的子文件夹
+        const worksConfig = [
+            { name: "横屏", folder: "horizontal", count: 20 }, // 示例：works文件夹中的horizontal文件夹加载为“横屏”标签，该文件夹/标签内有20张图 (1.jpg - 20.jpg)
+            { name: "竖屏", folder: "vertical", count: 12 },
+            { name: "活动", folder: "activity", count: 1 }
+			// 每个文件夹都加载为一个标签，文件夹中的图片就是标签内的图片
+        ];
+
+        // 合影配置：对应 img/photos/ 下的子文件夹
+        const photosConfig = [
+            { name: "秋音", folder: "qiuyin", count: 3 },
+            { name: "猫", folder: "mao", count: 4 }
+        ];
+
+		// 聊天语料库
+        const chatCorpus = {
+			"Default": "没听懂喵 X﹏X", //未命中关键词的默认回复
+            "你好": "你好喵！欢迎来到我的网站",
+            "作品": "点击左侧的【作品集】可以看到我以前的作品哦",
+            "联系": "你可以通过【链接】页面的方式找到我",
+            "工具": "我主要使用 VRChat、Unity 和 Blender",          
+			"1": "2",
+			"这个": "这里是秋音的网站哦",
+			"喂": "喂喂喂",
+			"揉": "喵啊~好舒服喵~",
+			"摸": "喵啊~好舒服喵~",
+			"猫": "喵喵喵~",
+        };
+
+		// 音乐数据配置
+        const musicData = [
+            {
+                id: 1,
+                title: "ウワサのあの子 (传言中之子)", //标题
+                artist: "紫 今", //艺术家
+                album: "ウワサのあの子", //专辑
+                cover: "music/1.jpg", // 封面图片
+                mp3: "music/1.mp3", // MP3文件
+                ncm: "https://music.163.com/song?id=2694778883" // 网易云链接
+            },
+            {
+                id: 2,
+                title: "エレクトロ・ワールド (电子世界)",
+                artist: "Perfume",
+                album: "エレクトロ・ワールド",
+                cover: "music/2.jpg",
+                mp3: "music/2.mp3",
+                ncm: "https://music.163.com/song?id=797430"
+            },
+            {
+                id: 3,
+                title: "Luv It Baby",
+                artist: "はてなぷれいりすと/ Nqsi",
+                album: "Luv It Baby",
+                cover: "music/3.jpg",
+                mp3: "music/3.mp3",
+                ncm: "https://music.163.com/song?id=2158522240"
+            }
+        ];
+
+        /* ==== 路由与状态管理 ====*/
+        
+        function switchTab(tabId) {          
+            // 1. 处理导航高亮
+            // PC
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            navItems.forEach(item => {
+                if(item.getAttribute('onclick').includes(tabId)) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Mobile
+            const bottomItems = document.querySelectorAll('.bottom-nav-item');
+            bottomItems.forEach(item => item.classList.remove('active'));
+            
+            // 检查该 tab 是否在底部栏直接显示
+            let inBottomBar = false;
+            bottomItems.forEach(item => {
+                if(item.getAttribute('onclick') && item.getAttribute('onclick').includes(tabId)) {
+                    item.classList.add('active');
+                    inBottomBar = true;
+                }
+            });
+
+            // 如果不在底部栏显示（即在更多菜单里），则高亮“更多”按钮
+            if (!inBottomBar) {
+                const moreBtn = bottomItems[bottomItems.length - 1]; // 最后一个是更多
+                moreBtn.classList.add('active');
+            }
+
+            // 2. 页面容器切换 (淡入淡出动画)
+            const pages = document.querySelectorAll('.page-container');
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+
+			// 如果从其他页面切回来，需要确保文章是折叠的
+            if (tabId === 'writing') {
+                collapseArticle(); 
+            }
+
+            setTimeout(() => {
+                const targetPage = document.getElementById('page-' + tabId);
+                if (targetPage) {
+                    targetPage.classList.add('active');
+                }
+            }, 50);
+
+            // 切换页面时，如果更多菜单是打开的，关掉它
+            const menu = document.getElementById('mobile-more-menu');
+            menu.classList.remove('active');
+
+			// 关闭音乐右键菜单（如果开着）
+            document.getElementById('music-context-menu').style.display = 'none';
+
+			removeMobileMenu()
+        }
+
+        // 切换移动端更多菜单
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-more-menu');
+            menu.classList.toggle('active');
+        }
+
+		function removeMobileMenu() {
+            const menu = document.getElementById('mobile-more-menu');
+            menu.classList.remove('active');
+        }
+
+        // PC端侧边栏折叠切换
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+
+        /* ==== 动态内容渲染逻辑 ==== */
+        
+        // 初始化标签栏
+        function initTabs(section) {
+            const config = section === 'works' ? worksConfig : photosConfig;
+            const containerId = section === 'works' ? 'works-tabs' : 'photos-tabs';
+            const container = document.getElementById(containerId);
+            
+            if(!container) return;
+            
+            // 添加 "全部" 按钮
+            let html = `<button class="filter-btn active" onclick="loadGrid('${section}', 'all', this)">全部</button>`;
+            
+            // 添加子文件夹按钮
+            config.forEach(item => {
+                html += `<button class="filter-btn" onclick="loadGrid('${section}', '${item.folder}', this)">${item.name}</button>`;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // 加载图片网格
+        function loadGrid(section, folderFilter = 'all', btnElement = null) {
+            const config = section === 'works' ? worksConfig : photosConfig;
+            const gridId = section === 'works' ? 'gallery-grid' : 'photos-grid';
+            const grid = document.getElementById(gridId);
+            const parentFolder = section === 'works' ? 'works' : 'photos';
+
+            if(!grid) return;
+
+            // 处理按钮高亮
+            if(btnElement) {
+                const tabsContainer = btnElement.parentElement;
+                const btns = tabsContainer.querySelectorAll('.filter-btn');
+                btns.forEach(b => b.classList.remove('active'));
+                btnElement.classList.add('active');
+            }
+
+            grid.innerHTML = ''; // 清空当前网格
+
+            // 确定要加载的文件夹列表
+            let foldersToLoad = [];
+            if (folderFilter === 'all') {
+                foldersToLoad = config;
+            } else {
+                foldersToLoad = config.filter(c => c.folder === folderFilter);
+            }
+
+            // 遍历文件夹并生成图片卡片
+            foldersToLoad.forEach(folderItem => {
+                for (let i = 1; i <= folderItem.count; i++) {
+                    const imgPath = `img/${parentFolder}/${folderItem.folder}/${i}.jpg`;
+                    const title = `${folderItem.name} #${i}`;
+                    
+                    const card = document.createElement('div');
+                    card.className = 'masonry-item';
+                    
+                    // 注意：onerror 用于处理文件中断的情况，隐藏加载失败的图片
+                    card.innerHTML = `
+                        <img src="${imgPath}" 
+                             loading="lazy" 
+                             onclick="openLightbox(this)" 
+                             onerror="this.parentElement.style.display='none'"
+                             alt="${title}">
+                        <div class="item-overlay">
+                            <div class="overlay-title">${folderItem.name}</div>
+                            <div class="overlay-type">NO. ${i}</div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                }
+            });
+            
+            // 为新生成的元素添加波纹效果
+            setTimeout(() => {
+                const newItems = grid.querySelectorAll('.masonry-item');
+                newItems.forEach(el => el.addEventListener('click', createRipple)); // 注意：这是加在card上，但click主要由img触发lightbox
+            }, 0);
+        }
+
+		/* ==== 音乐分享逻辑 (Music) ==== */
+        let currentAudio = document.getElementById('global-audio');
+        let currentPlayingId = null;
+        let contextMenuTargetId = null;
+
+        function initMusicGrid() {
+            const grid = document.getElementById('music-grid');
+            grid.innerHTML = '';
+
+            musicData.forEach(music => {
+                const card = document.createElement('div');
+                card.className = 'music-card';
+                card.id = `music-card-${music.id}`;
+                card.oncontextmenu = (e) => showContextMenu(e, music.id);
+
+                card.innerHTML = `
+                    <div class="music-cover-wrapper">
+                        <img class="music-cover" src="${music.cover}" alt="${music.title}" onerror="this.src='img/photos/mao/1.jpg'">
+                        <div class="play-btn-overlay" onclick="togglePlayMusic(${music.id})">
+                            <svg id="play-icon-${music.id}" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </div>
+                    <div class="progress-container" onclick="seekAudio(event, ${music.id})" onmousemove="if(event.buttons===1) seekAudio(event, ${music.id})">
+                        <div class="progress-bar" id="progress-${music.id}"></div>
+                    </div>
+                    <div class="music-info">
+                        <div class="music-title">${music.title}</div>
+                        <div class="music-artist">${music.artist} • ${music.album}</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function togglePlayMusic(id) {
+            const music = musicData.find(m => m.id === id);
+            if (!music) return;
+
+            const icon = document.getElementById(`play-icon-${id}`);
+            const card = document.getElementById(`music-card-${id}`);
+
+            if (currentPlayingId === id) {
+                // 当前正在播放/暂停这首歌
+                if (currentAudio.paused) {
+                    currentAudio.play();
+                    icon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>'; // Pause icon
+                    card.classList.add('playing');
+                } else {
+                    currentAudio.pause();
+                    icon.innerHTML = '<path d="M8 5v14l11-7z"/>'; // Play icon
+                    card.classList.remove('playing');
+                }
+            } else {
+                // 切换到新歌
+                if (currentPlayingId !== null) {
+                    // 重置上一首的状态
+                    const prevIcon = document.getElementById(`play-icon-${currentPlayingId}`);
+                    const prevCard = document.getElementById(`music-card-${currentPlayingId}`);
+                    if (prevIcon) prevIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+                    if (prevCard) prevCard.classList.remove('playing');
+                    document.getElementById(`progress-${currentPlayingId}`).style.width = '0%';
+                }
+
+                currentPlayingId = id;
+                currentAudio.src = music.mp3;
+                currentAudio.play();
+                
+                icon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+                card.classList.add('playing');
+            }
+        }
+
+        // 监听音频播放进度
+        currentAudio.ontimeupdate = function() {
+            if (currentPlayingId !== null) {
+                const percentage = (currentAudio.currentTime / currentAudio.duration) * 100;
+                const bar = document.getElementById(`progress-${currentPlayingId}`);
+                if (bar) bar.style.width = `${percentage}%`;
+            }
+        };
+        
+        // 播放结束重置
+        currentAudio.onended = function() {
+            if (currentPlayingId !== null) {
+                const icon = document.getElementById(`play-icon-${currentPlayingId}`);
+                const card = document.getElementById(`music-card-${currentPlayingId}`);
+                if (icon) icon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+                if (card) card.classList.remove('playing');
+                document.getElementById(`progress-${currentPlayingId}`).style.width = '0%';
+                currentPlayingId = null;
+            }
+        }
+
+        // 点击/拖动进度条
+        function seekAudio(event, id) {
+            // 只有当点击的是当前正在播放的歌曲的进度条时才生效，或者允许切歌？
+            // 这里逻辑：如果点击的不是当前歌，暂不处理（简单化），或者切换并播放
+            if (currentPlayingId !== id) return; 
+
+            const container = event.currentTarget;
+            const rect = container.getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const width = rect.width;
+            const percentage = Math.max(0, Math.min(1, clickX / width));
+            
+            if (currentAudio.duration) {
+                currentAudio.currentTime = percentage * currentAudio.duration;
+            }
+        }
+
+        /* ==== 右键菜单逻辑 ==== */
+        function showContextMenu(e, id) {
+            e.preventDefault();
+            contextMenuTargetId = id;
+            
+            const menu = document.getElementById('music-context-menu');
+            const playText = document.getElementById('ctx-play-text');
+            
+            // 根据当前状态更新菜单文本
+            if (currentPlayingId === id && !currentAudio.paused) {
+                playText.textContent = "暂停";
+            } else {
+                playText.textContent = "播放";
+            }
+
+            // 计算位置，防止溢出屏幕
+            let x = e.clientX;
+            let y = e.clientY;
+            
+            menu.style.display = 'flex';
+            
+            // 简单边界检测
+            if (x + menu.offsetWidth > window.innerWidth) x -= menu.offsetWidth;
+            if (y + menu.offsetHeight > window.innerHeight) y -= menu.offsetHeight;
+
+            menu.style.left = `${x}px`;
+            menu.style.top = `${y}px`;
+        }
+
+        function handleContextMenuAction(action) {
+            const menu = document.getElementById('music-context-menu');
+            menu.style.display = 'none';
+            
+            if (!contextMenuTargetId) return;
+            const music = musicData.find(m => m.id === contextMenuTargetId);
+
+            if (action === 'play') {
+                togglePlayMusic(contextMenuTargetId);
+            } else if (action === 'restart') {
+                if (currentPlayingId === contextMenuTargetId) {
+                    currentAudio.currentTime = 0;
+                    currentAudio.play();
+                } else {
+                    togglePlayMusic(contextMenuTargetId);
+                }
+            } else if (action === 'netease') {
+                if (music && music.ncm) {
+                    window.open(music.ncm, '_blank');
+                } else {
+                    alert('暂无网易云链接');
+                }
+            }
+        }
+
+        // 点击其他地方关闭右键菜单
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('music-context-menu');
+            if (!menu.contains(e.target)) {
+                menu.style.display = 'none';
+            }
+        });
+
+        /* ==== 全屏图片逻辑 (Lightbox) ==== */
+        function openLightbox(element) {
+            // 获取点击的图片元素 (可能是 img 或者是包含 img 的 div)
+            let imgSrc = '';
+            if (element.tagName === 'IMG') {
+                imgSrc = element.src;
+            } else {
+                imgSrc = element.querySelector('img').src;
+            }
+
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            
+            lightboxImg.src = imgSrc;
+            lightbox.classList.add('active');
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+        }
+
+
+		/* ==== 文章展开与收起逻辑 ==== */
+        
+        let activeArticle = null;
+
+        function expandArticle(element) {
+            // 如果点击的是已经展开的文章，不做任何事
+            if (element.classList.contains('expanded')) return;
+
+            // 收起之前展开的（如果有）
+            if (activeArticle) {
+                activeArticle.classList.remove('expanded');
+            }
+
+            activeArticle = element;
+            element.classList.add('expanded');
+            
+            // 显示返回按钮
+            document.getElementById('writing-back-btn').classList.add('visible');
+
+            // 滚动到顶部，确保内容从头开始阅读
+            document.getElementById('page-writing').scrollTop = 0;
+        }
+
+        function collapseArticle() {
+            if (activeArticle) {
+                activeArticle.classList.remove('expanded');
+                activeArticle = null;
+            }
+            document.getElementById('writing-back-btn').classList.remove('visible');
+        }
+
+        /* ==== 聊天逻辑 ==== */
+        
+        // 获取回复内容的辅助函数
+        function getBotReply(text) {
+            // 关键词匹配
+            for (let key in chatCorpus) {
+                if (key !== "Default" && text.includes(key)) {
+                    return chatCorpus[key];
+                }
+            }
+            return chatCorpus["Default"];
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const container = document.getElementById('chat-messages');
+            const myMsg = document.createElement('div');
+            myMsg.className = 'msg me';
+            myMsg.textContent = text;
+            container.appendChild(myMsg);
+
+            input.value = '';
+            container.scrollTop = container.scrollHeight;
+
+            // 生成回复
+            setTimeout(() => {
+                const replyText = getBotReply(text);
+                const replyMsg = document.createElement('div');
+                replyMsg.className = 'msg other';
+                replyMsg.textContent = replyText;
+                container.appendChild(replyMsg);
+                container.scrollTop = container.scrollHeight;
+            }, 800);
+        }
+
+        function handleChatEnter(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        
+        function createRipple(event) {
+            const button = event.currentTarget;
+            const circle = document.createElement("span");
+            const diameter = Math.max(button.clientWidth, button.clientHeight);
+            const radius = diameter / 2;
+            const rect = button.getBoundingClientRect();
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${event.clientX - rect.left - radius}px`;
+            circle.style.top = `${event.clientY - rect.top - radius}px`;
+            circle.classList.add("ripple");
+            const existingRipple = button.getElementsByClassName("ripple")[0];
+            if (existingRipple) { existingRipple.remove(); }
+            button.appendChild(circle);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const interactives = document.querySelectorAll('.nav-item, .icon-container, .filter-btn, .chat-send, .tag-chip, .mobile-menu-item');
+            interactives.forEach(el => {
+                el.addEventListener('click', createRipple);
+            });
+
+            // 初始化标签和网格
+            initTabs('works');
+            loadGrid('works', 'all'); // 加载全部作品
+            
+            initTabs('photos');
+            loadGrid('photos', 'all'); // 加载全部合影
+
+			// 初始化音乐
+            initMusicGrid();
+        });
+
+		//禁用图片和链接拖拽
+    	document.addEventListener('dragstart', function(e) {
+            if (e.target.tagName === 'IMG') {
+                e.preventDefault();
+                return false;
+            }
+        });
+		document.addEventListener('dragstart', function(e) {
+   			if (e.target.tagName === 'A') {
+       			e.preventDefault();
+   			}
+		});
+		// 禁用右键菜单
+        /*document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });*/
+
+    </script>
+</body>
+</html>
